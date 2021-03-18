@@ -4,12 +4,21 @@
 \alias{Plot_cluster_spatial}
 \title{Visualization of cluster spatial distribution}
 \usage{
-Plot_cluster_spatial(sce, Image_number = 1)
+Plot_cluster_spatial(
+  sce,
+  Image_number = 1,
+  Cex_parameter = 10,
+  Specific_cluster = NULL
+)
 }
 \arguments{
 \item{sce}{a \code{\link[SingleCellExperiment]{SingleCellExperiment}}. Clustering of the cell should have been previously performed.}
 
 \item{Image_number}{Number of name of the image/ROI to be plotted}
+
+\item{Cex_parameter}{Scaling factor for the size of the cells}
+
+\item{Specific_cluster}{Colors points based based on their belonging to a specific cluster}
 }
 \value{
 Return a plot

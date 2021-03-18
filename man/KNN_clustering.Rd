@@ -4,7 +4,12 @@
 \alias{KNN_clustering}
 \title{Perform cell clustering on a computed KNN graph}
 \usage{
-KNN_clustering(sce, K = 30, clustering_method = "Louvain")
+KNN_clustering(
+  sce,
+  K = 30,
+  clustering_method = "Louvain",
+  assay_type = "Count_normalised_intensity"
+)
 }
 \arguments{
 \item{sce}{a \code{\link[SingleCellExperiment]{SingleCellExperiment}}.}
@@ -12,6 +17,8 @@ KNN_clustering(sce, K = 30, clustering_method = "Louvain")
 \item{K}{number of neighbors for the KNN graph computation}
 
 \item{clustering_method}{method used for graph clustering. Has to be chose among "Louvain","Greedy" and "Infomap"}
+
+\item{assay_type}{name of the data slot on which to perform the clustering (Raw_intensity, Arcsinh_transformed_intensity....). By default the regression-normalized data are used}
 }
 \value{
 Returns an updated \code{\link[SingleCellExperiment]{SingleCellExperiment}} object with an updated colLabels slot

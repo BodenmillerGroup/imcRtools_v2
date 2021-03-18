@@ -12,7 +12,8 @@ Load_IMC_data(
   Name_metal = "Metal.Tag",
   Regex_expression_channel = "Intensity_MeanIntensity_FullStackFiltered_c",
   DNA_channel = NULL,
-  Use_for_clustering = NULL
+  Use_for_clustering = NULL,
+  Number_of_cells = NULL
 )
 }
 \arguments{
@@ -29,6 +30,8 @@ Load_IMC_data(
 \item{DNA_channel}{vector containing the name of the channels that measure cellular DNA amount}
 
 \item{Use_for_clustering}{which channels will be used for cell clustering}
+
+\item{Number_of_cells}{how many cells should be extracted from the csv file ?}
 }
 \value{
 Returns a list object that can later be used to build a SCE object
@@ -37,12 +40,12 @@ Returns a list object that can later be used to build a SCE object
 This function loads data produced by the ImcSegmentationPipeline and output a list containing the different objects
 }
 \examples{
-List_data = Load_IMC_data("Desktop/analysis/cpout/cell.csv",
+List_data = Load_IMC_data(Path_to_cell_file = "Desktop/analysis/cpout/cell.csv",
                          Path_to_panel_file ="Desktop/analysis/cpout/panel.csv",
                          DNA_channel = c("Iridium191","Iridium193"),
                          Regex_expression_channel = "Intensity_MeanIntensity_FullStackFiltered_c",
                          Use_for_clustering = c("Myeloperoxidase.MPO","CD31","SMA","Cytokeratin.5",
                                                 "Keratin.14","Vimentin","CD3","CD68", "Cytokeratin.8.18","CD45",
-                                                "Carbonic.Anhydrase.IX","Fibronectin","Ki.67","CD20","CD44","pan.Cytokeratin"))
+                                                "Carbonic.Anhydrase.IX","Fibronectin","Ki.67","CD20","CD44","pan.Cytokeratin"),Number_of_cells = NULL)
 
 }

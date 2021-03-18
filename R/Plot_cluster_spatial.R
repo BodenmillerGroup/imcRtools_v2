@@ -28,14 +28,25 @@ Plot_cluster_spatial = function(sce,Image_number = 1,Cex_parameter=10,Specific_c
   
   Dimension = metadata(sce)$dimension
   
+  if ("Cell_size"%in%colnames(colData(sce))) {
+    Temp_size_data = sce$Cell_size[sce$ImageNumber==Image_number]
+  }
+  
+  if (!"Cell_size"%in%colnames(colData(sce))) {
+    Temp_size_data = rep(10,sum(sce$ImageNumber==Image_number))
+  }
+  
   
   if (Dimension == "2D") {
-    Temp_size_data = sqrt(sce$Cell_size[sce$ImageNumber==Image_number])
+    Temp_size_data = sqrt(Temp_size_data)
   }
   
   if (Dimension == "3D") {
-    Temp_size_data = (sce$Cell_size[sce$ImageNumber==Image_number])^1/3
+    Temp_size_data = (Temp_size_data)^1/3
   }
+  
+  
+  
   
   par(las=1,bty="l")
   

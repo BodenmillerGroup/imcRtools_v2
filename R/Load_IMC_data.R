@@ -8,15 +8,23 @@
 #' @param Name_metal name of the column from the panel.csv file that provides the metal name
 #' @param Regex_expression_channel full prefix of the cell.csv file column name that describe marker intensity 
 #' @param DNA_channel vector containing the name of the channels that measure cellular DNA amount 
-#' @param Use_for_clustering which channels will be used for cell clustering 
-#' @param Number_of_cells how many cells should be extracted from the csv file ?
+#' @param Use_for_clustering names of channels used for cell clustering 
+#' @param Number_of_cells number of cells extracted 
+#' @param Reorder_channel how should the channel be renamed. If set to NULL will use the default order in the panel.csv file. 
+#' @param X_position_colname column name of the cell.csv file describing the X position of cell centroïd. By default corresponds to CellProfiler output.
+#' @param Y_position_colname column name of the cell.csv file describing the Y position of cell centroïd. By default corresponds to CellProfiler output.
+#' @param Size_colname column name of the cell.csv file describing the cell size. By default corresponds to CellProfiler output.
+#' @param Image_number_colname column name of the cell.csv file describing the ROI of origin for each cell. By default corresponds to CellProfiler output.
 
+#' If set to TRUE it will reorder the panel based on metal mass. 
+#' Otherwise provide a path to a file containing the order of the panel
 #' @return Returns a list object that can later be used to build a SCE object
 #'
 #' @examples
-#'List_data = Load_IMC_data("Desktop/analysis/cpout/cell.csv",
+#'List_data = Load_IMC_data(Path_to_cell_file = "Desktop/analysis/cpout/cell.csv",
 #'                          Path_to_panel_file ="Desktop/analysis/cpout/panel.csv",
 #'                          DNA_channel = c("Iridium191","Iridium193"),
+#'                          Reorder_channel = NULL,
 #'                          Regex_expression_channel = "Intensity_MeanIntensity_FullStackFiltered_c",
 #'                          Use_for_clustering = c("Myeloperoxidase.MPO","CD31","SMA","Cytokeratin.5",
 #'                                                 "Keratin.14","Vimentin","CD3","CD68", "Cytokeratin.8.18","CD45",
@@ -29,11 +37,40 @@
 Load_IMC_data = function(Path_to_cell_file,Path_to_panel_file,
                          Name_target = "Target",Name_metal="Metal.Tag",
                          Regex_expression_channel = "Intensity_MeanIntensity_FullStackFiltered_c",
-                         DNA_channel = NULL,Use_for_clustering = NULL,Number_of_cells=NULL) {
+                         DNA_channel = NULL,Use_for_clustering = NULL,Number_of_cells=NULL,Reorder_channel=NULL,
+                         X_position_colname = "Location_Center_X",Y_position_colname = "Location_Center_Y",
+                         Size_colname = "AreaShape_Area",Image_number_colname = "ImageNumber") {
   
   Panel_table = read.csv(Path_to_panel_file)
-
   
+  
+  #Get the numeric order of the channel in the cell file
+  
+  if (is.logical(Reorder_channel)) {
+    if (Reorder_channel) {
+      Order_channel = order(gsub("[^0-9.-]", "", Panel_table$Metal.Tag))
+      Panel_table = Panel_table[Order_channel,]
+    }
+  }
+  
+
+  if (is.character(Reorder_channel)) {
+    if (!file.exists(Reorder_channel)) {
+      stop("The file provided for channel ordering does not exist. Please provide a real one ! \n")
+    }
+  }
+  
+  
+  if (is.character(Reorder_channel)) {
+    if (file.exists(Reorder_channel)) {
+      Reorder_channel_file = read.delim(Reorder_channel,header = F)
+      Reorder_channel_file = Reorder_channel_file[,1]
+      rownames(Panel_table) = Panel_table[,Name_metal]
+      Panel_table = Panel_table[Reorder_channel_file,]
+    }
+  }
+  
+
   cat("Loading the cell data ... ")
   
   if (is.null(Number_of_cells)) {
@@ -50,12 +87,15 @@ Load_IMC_data = function(Path_to_cell_file,Path_to_panel_file,
   
   #Extracting the mean intensity values
   
+  #Get the numeric order of the channel in the cell file
+  
   Expression_data = Raw_data[,base::grepl(colnames(Raw_data),pattern = Regex_expression_channel)]
   l = colnames(Expression_data)
   l = strsplit(l,split = Regex_expression_channel)
   l = unlist(lapply(l,FUN = function(x) {x[2]}))
   l = as.numeric(l)
   
+
   colnames(Expression_data) = make.names(Panel_table[l,Name_target],unique = TRUE)
   
   x = make.names(Panel_table[l,Name_target],unique = TRUE)
@@ -63,11 +103,19 @@ Load_IMC_data = function(Path_to_cell_file,Path_to_panel_file,
   
   #Extracting the cell annotation table
   
-  Cell_annotation = data.frame(ImageNumber = Raw_data$ImageNumber,
+
+  Cell_annotation = data.frame(ImageNumber = Raw_data[,Image_number_colname],
                                ObjectNumber = Raw_data$ObjectNumber,
-                               Location_Center_X = Raw_data$Location_Center_X,
-                               Location_Center_Y = Raw_data$Location_Center_Y,
-                               Cell_size = Raw_data$AreaShape_Area)
+                               Location_Center_X = Raw_data[,X_position_colname],
+                               Location_Center_Y = Raw_data[,Y_position_colname])
+  if (Size_colname %in% colnames(Raw_data)) {
+    Cell_annotation$Cell_size = Raw_data[,Size_colname]
+  }
+  
+  if (!Size_colname %in% colnames(Raw_data)) {
+    warning("The cell size column was not found in the cell file !")
+  }
+  
   
   #Extracting the gene annotation table
   

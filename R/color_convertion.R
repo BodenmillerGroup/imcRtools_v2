@@ -24,7 +24,7 @@
   List_unique_cluster = List_unique_cluster[order(List_unique_cluster)]
   
   if (!is.null(Defined_list_cluster)) {
-    List_unique_cluster = List_unique_cluster
+    List_unique_cluster = Defined_list_cluster
   }
   
   N_clusters = length(unique(cluster_vector))

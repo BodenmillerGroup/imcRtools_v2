@@ -21,7 +21,7 @@ Count_normalization(
 \item{residual_normalisation}{method for residual normalisation. Has to be chosen among "Anscombe","Pearson","Working" or "VST"}
 }
 \value{
-Returns a \code{\link[SingleCellExperiment]{SingleCellExperiment}} object with a new assay slot called "Normalized_intensity"
+Returns a \code{\link[SingleCellExperiment]{SingleCellExperiment}} object with a new assay slot called "Count_normalised_intensity"
 }
 \description{
 This function normalize and transform the intensity using a glm-based strategy

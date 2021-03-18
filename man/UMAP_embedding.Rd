@@ -4,21 +4,26 @@
 \alias{UMAP_embedding}
 \title{Computation of a UMAP embedding}
 \usage{
-UMAP_embedding(sce, metric = "correlation", n_neighbors = 30)
+UMAP_embedding(
+  sce,
+  assay_type = "Count_normalised_intensity",
+  metric = "correlation",
+  n_neighbors = 30
+)
 }
 \arguments{
 \item{sce}{a \code{\link[SingleCellExperiment]{SingleCellExperiment}}.}
 
-\item{path}{to the Object relationships.csv file produced by the ImcSegmentationPipeline}
+\item{assay_type}{name of the data slot on which to perform the clustering (Raw_intensity, Arcsinh_transformed_intensity....). By default the regression-normalized data are used}
 }
 \value{
-Return an updated \code{\link[SingleCellExperiment]{SingleCellExperiment}} object with a list of graph, one per image
+Return an updated \code{\link[SingleCellExperiment]{SingleCellExperiment}} object with an updated reducedDim slot.
 }
 \description{
 Computes a UMAP embedding
 }
 \examples{
-sce = Compute_neighborhood_graph(sce,graph_type = "KNN",graph_parameter = 10)
+sce = UMAP_embedding(sce,assay_type = "Count_normalised_intensity", metric="correlation",n_neighbors = 30)
 
 
 }
