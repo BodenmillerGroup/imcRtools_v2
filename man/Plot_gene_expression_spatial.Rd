@@ -7,6 +7,7 @@
 Plot_gene_expression_spatial(
   sce,
   Image_number = 1,
+  Cex_parameter = 5,
   assay_type = "Count_normalised_intensity",
   Gene = NULL
 )
@@ -15,6 +16,8 @@ Plot_gene_expression_spatial(
 \item{sce}{a \code{\link[SingleCellExperiment]{SingleCellExperiment}}.}
 
 \item{Image_number}{Number of name of the image/ROI to be plotted}
+
+\item{Cex_parameter}{Scaling factor for the size of the cells}
 
 \item{assay_type}{name of the data slot on which to perform the clustering (Raw_intensity, Arcsinh_transformed_intensity....). By default the regression-normalized data are used}
 

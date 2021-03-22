@@ -4,12 +4,16 @@
 \alias{Arcsinh_normalization}
 \title{Transformation of raw intensity using arcsinh transform}
 \usage{
-Arcsinh_normalization(sce, cofactor_value = NULL)
+Arcsinh_normalization(sce, compute_cofactor = TRUE, cofactor_value = NULL)
 }
 \arguments{
 \item{sce}{a \code{\link[SingleCellExperiment]{SingleCellExperiment}}.}
 
-\item{cofactor_value}{numeric value describing the arcsinh cofactor (by default set to 50)}
+\item{compute_cofactor}{a boolean describing if a global lambda cofactor should be computed}
+
+\item{cofactor_value}{numeric value describing the arcsinh cofactor. If defined, overide the "compute_cofactor" argument.}
+
+\item{trimming_value}{numeric value describing the quantile paramater used for trimming. Set to NULL by default.}
 }
 \value{
 Returns a \code{\link[SingleCellExperiment]{SingleCellExperiment}} object with a new assay slot called "Arcsinh_transformed_intensity"

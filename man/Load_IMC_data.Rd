@@ -13,7 +13,12 @@ Load_IMC_data(
   Regex_expression_channel = "Intensity_MeanIntensity_FullStackFiltered_c",
   DNA_channel = NULL,
   Use_for_clustering = NULL,
-  Number_of_cells = NULL
+  Number_of_cells = NULL,
+  Reorder_channel = NULL,
+  X_position_colname = "Location_Center_X",
+  Y_position_colname = "Location_Center_Y",
+  Size_colname = "AreaShape_Area",
+  Image_number_colname = "ImageNumber"
 )
 }
 \arguments{
@@ -29,9 +34,21 @@ Load_IMC_data(
 
 \item{DNA_channel}{vector containing the name of the channels that measure cellular DNA amount}
 
-\item{Use_for_clustering}{which channels will be used for cell clustering}
+\item{Use_for_clustering}{names of channels used for cell clustering}
 
-\item{Number_of_cells}{how many cells should be extracted from the csv file ?}
+\item{Number_of_cells}{number of cells extracted}
+
+\item{Reorder_channel}{how should the channel be renamed. If set to NULL will use the default order in the panel.csv file.}
+
+\item{X_position_colname}{column name of the cell.csv file describing the X position of cell centroïd. By default corresponds to CellProfiler output.}
+
+\item{Y_position_colname}{column name of the cell.csv file describing the Y position of cell centroïd. By default corresponds to CellProfiler output.}
+
+\item{Size_colname}{column name of the cell.csv file describing the cell size. By default corresponds to CellProfiler output.}
+
+\item{Image_number_colname}{column name of the cell.csv file describing the ROI of origin for each cell. By default corresponds to CellProfiler output.
+If set to TRUE it will reorder the panel based on metal mass. 
+Otherwise provide a path to a file containing the order of the panel}
 }
 \value{
 Returns a list object that can later be used to build a SCE object
@@ -43,6 +60,7 @@ This function loads data produced by the ImcSegmentationPipeline and output a li
 List_data = Load_IMC_data(Path_to_cell_file = "Desktop/analysis/cpout/cell.csv",
                          Path_to_panel_file ="Desktop/analysis/cpout/panel.csv",
                          DNA_channel = c("Iridium191","Iridium193"),
+                         Reorder_channel = NULL,
                          Regex_expression_channel = "Intensity_MeanIntensity_FullStackFiltered_c",
                          Use_for_clustering = c("Myeloperoxidase.MPO","CD31","SMA","Cytokeratin.5",
                                                 "Keratin.14","Vimentin","CD3","CD68", "Cytokeratin.8.18","CD45",

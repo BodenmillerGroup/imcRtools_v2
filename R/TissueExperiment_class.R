@@ -75,7 +75,7 @@ Create_TissueExperiment = function(sce,r_range = 0:250) {
   
   #Computing the cluster specific K functions
   
-  cat("Computing the cluster-specific K and pair correlation functions in each image... \,")
+  cat("Computing the cluster-specific K and pair correlation functions in each image... \n")
   List_cluster_K_functions = c()
   List_cluster_pcf = c()
   
@@ -147,27 +147,65 @@ Create_TissueExperiment = function(sce,r_range = 0:250) {
     List_cluster_pcf[[k]] = Cluster_pcf_temp_merged
   }
   
-  #Computing the spatial simpson index alpha and beta
+  #Computing the spatial simpson index alpha 
   
-  List_spatial_simpson_index = foreach(k=1:N_Images) {
+  Spatial_alpha_index = foreach(k=1:N_Images,.combine = cbind) %dopar% {
     
     
     Temp_location_data = data.frame(X = sce$Location_Center_X[sce$ImageNumber==k],
                                     Y = sce$Location_Center_Y[sce$ImageNumber==k])
     
     #Computing the lambda parameters
-    Area_size = area(owin(xrange = range(Temp_location_data$X),yrange = range(Temp_location_data$Y)))
+    Area_size = spatstat::area(owin(xrange = range(Temp_location_data$X),yrange = range(Temp_location_data$Y)))
     Lambda_parameter_global = nrow(Temp_location_data)/Area_size
-    Lambda_parameter_cluster = table(colLabels(sce)[sce$ImageNumber==k])/Area_size
+    Lambda_parameter_cluster = table(factor(colLabels(sce))[sce$ImageNumber==k])/Area_size
     
     #Extracting the K and pair correlation function
-    Temp_global_K_function = as.data.frame(List_cluster_K_functions[[k]])
+    Temp_global_K_function = as.data.frame(Merged_Kest)[,k+2]
     
     Temp_cluster_K_function = as.data.frame(List_cluster_K_functions[[k]])
     Temp_cluster_K_function = Temp_cluster_K_function[,c(-1,-2)]
     
+    #na_columns = colSums(is.na(Temp_cluster_K_function))==nrow(Temp_cluster_K_function)
+    #Temp_cluster_K_function[,na_columns] = 0
+        
+    Temp_cluster_K_function = apply(X = Temp_cluster_K_function,MARGIN = 1,FUN = function(x) {x*Lambda_parameter_cluster^2})
+    Temp_cluster_K_function = t(Temp_cluster_K_function)
+    Temp_cluster_K_function = apply(X = Temp_cluster_K_function, MARGIN = 2,FUN = function(x) {x/(Lambda_parameter_global^2*Temp_global_K_function)})
     
+    Alpha_index = 1- rowSums(Temp_cluster_K_function,na.rm = T)
+    Alpha_index      
   }
+  
+  
+  #Computing the spatial simpson index beta 
+  
+  Spatial_beta_index = foreach(k=1:N_Images,.combine = cbind) %dopar% {
+    
+    
+    Temp_location_data = data.frame(X = sce$Location_Center_X[sce$ImageNumber==k],
+                                    Y = sce$Location_Center_Y[sce$ImageNumber==k])
+    
+    #Computing the lambda parameters
+    Area_size = spatstat::area(owin(xrange = range(Temp_location_data$X),yrange = range(Temp_location_data$Y)))
+    Lambda_parameter_global = nrow(Temp_location_data)/Area_size
+    Lambda_parameter_cluster = table(factor(colLabels(sce))[sce$ImageNumber==k])/Area_size
+    
+    #Extracting the K and pair correlation function
+    Temp_global_pcf = as.data.frame(Merged_pcf)[,k+2]
+    
+    Temp_cluster_pcf = as.data.frame(List_cluster_pcf[[k]])
+    Temp_cluster_pcf = Temp_cluster_pcf[,c(-1,-2)]
+    
+
+    Temp_cluster_pcf = apply(X = Temp_cluster_pcf,MARGIN = 1,FUN = function(x) {x*Lambda_parameter_cluster^2})
+    Temp_cluster_pcf = t(Temp_cluster_pcf)
+    Temp_cluster_pcf = apply(X = Temp_cluster_pcf, MARGIN = 2,FUN = function(x) {x/(Lambda_parameter_global^2*Temp_global_pcf)})
+    
+    Beta_index = 1- rowSums(Temp_cluster_pcf,na.rm = T)
+    Beta_index      
+  }
+  
   
   
 }
