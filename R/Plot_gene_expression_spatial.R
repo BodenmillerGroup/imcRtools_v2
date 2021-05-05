@@ -53,6 +53,6 @@ Plot_gene_expression_spatial = function(sce,Image_number = 1,Cex_parameter=5,ass
   Temp_expression_data = as.numeric(assay(sce,assay_type)[Gene,])
   Temp_expression_data = Temp_expression_data - min(Temp_expression_data)
   par(las=1,bty="l")
-  plot(Temp_location_data,cex=Temp_size_data/Cex_parameter,pch=21,bg=.color_convertion(Temp_expression_data))
+  plot(Temp_location_data,cex=Temp_size_data/Cex_parameter,pch=21,bg=.color_convertion(Temp_expression_data)[sce$ImageNumber==Image_number])
   
 }

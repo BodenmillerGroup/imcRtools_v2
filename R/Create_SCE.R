@@ -17,10 +17,12 @@
 
 Create_SCE = function(List_data,dimension = "2D",Bit_mode=16,N_core = 6) {
   
+
   sce = SingleCellExperiment(assays = list(Raw_intensity = as.matrix(t(List_data$Expression_data))),
                              colData = List_data$Cell_annotation,
                              rowData = List_data$Gene_annotation,
                              metadata = list(dimension = dimension,Bit_mode=Bit_mode,N_core = N_core))
+  
   return(sce)
 }
 

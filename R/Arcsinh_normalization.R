@@ -42,6 +42,7 @@ Arcsinh_normalization = function(sce,compute_cofactor=TRUE, cofactor_value = NUL
   if (!is.null(cofactor_value)) {
     Lambda_parameter = cofactor_value
   }
+  cat(paste("Lambda parameter value :",as.character(Lambda_parameter)))
   #For justification : see the excellent paper from Bartlett "The Use of Transformations"
   Transformed_data = 1/Lambda_parameter * asinh(Lambda_parameter*sqrt(assays(sce)[["Raw_intensity"]]))
   

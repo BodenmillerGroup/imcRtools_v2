@@ -28,7 +28,7 @@ Count_normalization = function(sce,perform_batch_correction=FALSE,
   
   Transformed_data = round(Transformed_data)
   
-  if (!"Cell_size"%in%colnames(sce)) {
+  if (!"Cell_size"%in%colnames(colData(sce))) {
     stop("The normalization procedure can not be performed as cell size is not available in the SCE object. Please select an other method or add a Cell_size column !")
   }
   
