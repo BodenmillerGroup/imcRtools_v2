@@ -24,7 +24,7 @@ UMAP_embedding = function(sce,assay_type = "Count_normalised_intensity",metric="
   data_to_project = t(data_to_project)
   
   cat("Computing UMAP embedding...")
-  umap_embedding = umap(data_to_project,n_neighbors = n_neighbors,pca = NULL,metric = metric,verbose=F,fast_sgd = TRUE,n_threads = metadata(sce)$N_core )
+  umap_embedding = umap(data_to_project,n_neighbors = n_neighbors,pca = NULL,metric = metric,verbose=F,fast_sgd = TRUE,n_threads = metadata(sce)$N_core)
   cat(" done ! \n")
   
   reducedDim(sce, "UMAP") <- umap_embedding

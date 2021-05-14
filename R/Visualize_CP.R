@@ -1,13 +1,10 @@
 #' @rdname Visualize_CP
 #' @title Visualize the result of a Canonical Polyadic (CP) decomposition
-
 #'
 #' @description Basic function allowing to visualize the result of a Canonical Polyadic (CP) decomposition
 #'
 #' @param CP_object the output of the cp (rTensor package) function
 #' @param Plot_type the type of plot to produce. Has to be chosen among "all", "loading matrix" or
-
-
 #' @return 
 #' @examples
 #' Visualize_CP(CP_object)

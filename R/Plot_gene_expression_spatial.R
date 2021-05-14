@@ -8,7 +8,6 @@
 #' @param Image_number Number of name of the image/ROI to be plotted
 #' @param Gene Name of the gene to be plotted
 #' @param Cex_parameter Scaling factor for the size of the cells 
-
 #'
 #' @return Return a plot 
 #' @examples 

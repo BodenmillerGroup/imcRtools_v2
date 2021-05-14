@@ -7,7 +7,6 @@
 #' @param perform_batch_correction should covariates be regressed out ?
 #' @param batch_vector vector describing the batch of each cell
 #' @param residual_normalisation method for residual normalisation. Has to be chosen among "Anscombe","Pearson","Working" or "VST"
-
 #' @return Returns a \code{\link[SingleCellExperiment]{SingleCellExperiment}} object with a new assay slot called "Count_normalised_intensity"
 #'
 #' @examples
@@ -21,30 +20,92 @@ Count_normalization = function(sce,perform_batch_correction=FALSE,
                                batch_vector=NULL,residual_normalisation = "Anscombe") {
   
   #Transforming the data back to count data
-  Cell_size = sce$Cell_size
-  Transformed_data = t(assays(sce)[["Raw_intensity"]])
-  Transformed_data = Transformed_data * 2^metadata(sce)$Bit_mode
-  Transformed_data = apply(Transformed_data,MARGIN = 2,FUN = function(x) {x*Cell_size})
   
-  Transformed_data = round(Transformed_data)
   
   if (!"Cell_size"%in%colnames(colData(sce))) {
     stop("The normalization procedure can not be performed as cell size is not available in the SCE object. Please select an other method or add a Cell_size column !")
   }
   
+  #If 'simple data' -> direct resizing 
+  
+  if (!metadata(sce)$Is_nuc_cyt) {
+    Cell_size = sce$Cell_size
+    Transformed_data = t(assays(sce)[["Raw_intensity"]])
+    Transformed_data = Transformed_data * 2^metadata(sce)$Bit_mode
+    Transformed_data = apply(Transformed_data,MARGIN = 2,FUN = function(x) {x*Cell_size})
+    Transformed_data = round(Transformed_data)
+  }
+  
+  #If localisation/specific data -> selecting the size of the adapted compartment
+  
+  if (metadata(sce)$Is_nuc_cyt) {
+    
+    List_localisation = rowData(sce)[,"Localisation"]
+    names(List_localisation) = rownames(sce)
+    
+    for (k in rownames(sce)) {
+      
+      if (List_localisation[k]=="Cytoplasm") {
+        Object_size = sce$Cyto_size
+      }
+      
+      if (List_localisation[k]=="Nuclear") {
+        Object_size = sce$Nuc_size
+      }
+      
+      if (List_localisation[k]=="Cell") {
+        Object_size = sce$Cell_size
+      }
+      
+      
+      Transformed_data = t(assays(sce)[["Raw_intensity"]])
+      Transformed_data = Transformed_data * 2^metadata(sce)$Bit_mode
+      Transformed_data = apply(Transformed_data,MARGIN = 2,FUN = function(x) {x*Object_size})
+      Transformed_data = round(Transformed_data)
+      
+    }
+  }
+  
+  
+
   #Creating parallel backend
   cat(paste("Creating parallel backend using"),as.character(metadata(sce)$N_core),"cores \n")
   registerDoParallel(metadata(sce)$N_core)
   
-  #Performing the poisson regression
-  if (!perform_batch_correction) {
+  #Performing the poisson regression in the 'simple case'
+  if (!metadata(sce)$Is_nuc_cyt) {
     cat("Fitting Poisson regressions ...")
     
     List_regression_model =foreach(i=colnames(Transformed_data)) %dopar% {
-      Poisson_model = glm(Transformed_data[,i]~log(Cell_size),family = "poisson")
+    Poisson_model = glm(Transformed_data[,i]~log(Cell_size),family = "poisson")
     }
   }
   cat(" done ! \n")
+  
+  
+  #Performing the poisson regression in the complex case where signal is measured in each compartment
+  if (metadata(sce)$Is_nuc_cyt) {
+    cat("Fitting Poisson regressions ...")
+    
+    List_regression_model =foreach(k=colnames(Transformed_data)) %dopar% {
+      if (List_localisation[k]=="Cytoplasm") {
+        Object_size = sce$Cyto_size
+      }
+      
+      if (List_localisation[k]=="Nuclear") {
+        Object_size = sce$Nuc_size
+      }
+      
+      if (List_localisation[k]=="Cell") {
+        Object_size = sce$Cell_size
+      }
+      
+      Poisson_model = glm(Transformed_data[,k]~log(Object_size),family = "poisson")
+    }
+  }
+  cat(" done ! \n")
+  
+  
   
   #Extracting and normalizing residuals
   

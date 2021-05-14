@@ -18,7 +18,7 @@
 
 #' @export
 
-KNN_clustering = function(sce,K=30,clustering_method = "Louvain",assay_type="Count_normalised_intensity") {
+KNN_clustering = function(sce,K=30,clustering_method = "Louvain",assay_type="Count_normalised_intensity",metric="L2") {
   
   if (!assay_type%in%names(assays(sce))) {
     stop("The slot required does not exist. Please select an existing slot !")
@@ -28,6 +28,12 @@ KNN_clustering = function(sce,K=30,clustering_method = "Louvain",assay_type="Cou
     stop("The clustering method required does not exist. Please choose among Louvain,Greedy and Infomap !")
   }
     
+  
+  if (!metric %in%c("L2","angular")) {
+    stop("The distance metric required does not exist. Please choose among angular or L2!")
+  }
+  
+  
   data_to_cluster =assay(sce,assay_type)
   data_to_cluster = t(data_to_cluster)
   
@@ -43,7 +49,7 @@ KNN_clustering = function(sce,K=30,clustering_method = "Louvain",assay_type="Cou
   data_to_cluster = data_to_cluster[,Channel_for_clustering]
   
 
-  KNN_graph_matrix =  Knn(as.matrix(data_to_cluster), K, nThreads=metadata(sce)$N_core, verbose=F, indexType='angular')
+  KNN_graph_matrix =  Knn(as.matrix(data_to_cluster), K, nThreads=metadata(sce)$N_core, verbose=F, indexType=metric)
   KNN_graph_matrix = KNN_graph_matrix + t(KNN_graph_matrix)
   Final_graph <- graph_from_adjacency_matrix(KNN_graph_matrix,mode='undirected',weighted=TRUE)
   cat("KNN computed \n")

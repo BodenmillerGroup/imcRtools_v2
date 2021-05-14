@@ -4,8 +4,6 @@
 #' @description Compute cell type segregation using Dixon's approach described in papers by Dixon (1994 and 2002)
 #'
 #' @param sce a \code{\link[SingleCellExperiment]{SingleCellExperiment}}.
-
-
 #' @return Returns three-order tensor with the log-odds ratio of each pair of cell type
 #' @examples
 #' Dixon_tensor = Dixon_interaction_tensor(sce)

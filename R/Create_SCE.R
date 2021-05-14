@@ -5,7 +5,6 @@
 #' @param dimension the dimension of the data, either 2D or 3D
 #' @param Bit_mode bit mode acquisition, usually set to 16
 #' @param N_core number of cores used during parallelized computational steps
-
 #' @return returns an SCE object
 #'
 #' @examples
@@ -21,8 +20,16 @@ Create_SCE = function(List_data,dimension = "2D",Bit_mode=16,N_core = 6) {
   sce = SingleCellExperiment(assays = list(Raw_intensity = as.matrix(t(List_data$Expression_data))),
                              colData = List_data$Cell_annotation,
                              rowData = List_data$Gene_annotation,
-                             metadata = list(dimension = dimension,Bit_mode=Bit_mode,N_core = N_core))
+                             metadata = list(dimension = dimension,Bit_mode=Bit_mode,N_core = N_core,Is_nuc_cyt=F))
   
+  
+  #If the nuc/cyt data were loaded : puting it in the metadata
+  
+  if ("Localisation"%in%colnames(rowData(sce))) {
+    metadata(sce)$Is_nuc_cyt = T
+      
+  }
+
   return(sce)
 }
 

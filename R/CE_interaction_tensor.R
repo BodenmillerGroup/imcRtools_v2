@@ -4,8 +4,6 @@
 #' @description Compute the Clark-Evans index for each pair of cell type in each image and store them in a three-order tensor
 #'
 #' @param sce a \code{\link[SingleCellExperiment]{SingleCellExperiment}}.
-
-
 #' @return Returns three-order tensor with the log2 CE index of each pair of cell type in each image
 #' @examples
 #' CE_tensor = CE_interaction_tensor(sce)

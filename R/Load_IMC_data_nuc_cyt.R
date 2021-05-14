@@ -5,7 +5,6 @@
 #' @param Path_to_cell_file path to the cell.csv file produced by the ImcSegmentationPipeline (whole cell signal)
 #' @param Path_to_cyt_file path to the cyt.csv file produced by the ImcSegmentationPipeline (cytoplasm signal)
 #' @param Path_to_nuc_file path to the nuc.csv file produced by the ImcSegmentationPipeline (nuclear signal)
-
 #' @param Path_to_panel_file path to the panel.csv file
 #' @param Name_target name of the column from the panel.csv file that provides the gene name
 #' @param Name_metal name of the column from the panel.csv file that provides the metal name
@@ -18,7 +17,6 @@
 #' @param Y_position_colname column name of the cell.csv file describing the Y position of cell centroïd. By default corresponds to CellProfiler output.
 #' @param Size_colname column name of the cell.csv file describing the cell size. By default corresponds to CellProfiler output.
 #' @param Image_number_colname column name of the cell.csv file describing the ROI of origin for each cell. By default corresponds to CellProfiler output.
-
 #' If set to TRUE it will reorder the panel based on metal mass. 
 #' Otherwise provide a path to a file containing the order of the panel
 #' @return Returns a list object that can later be used to build a SCE object

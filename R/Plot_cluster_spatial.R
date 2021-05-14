@@ -7,7 +7,6 @@
 #' @param Image_number Number of name of the image/ROI to be plotted
 #' @param Cex_parameter Scaling factor for the size of the cells 
 #' @param Specific_cluster Colors points based based on their belonging to a specific cluster 
-
 #' @return Return a plot 
 #' @examples 
 #' Plot_cluster_spatial(sce,Image_number = 1)

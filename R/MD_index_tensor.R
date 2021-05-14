@@ -5,7 +5,6 @@
 #'
 #' @param sce a \code{\link[SingleCellExperiment]{SingleCellExperiment}}.
 #' @param k_parameter number of NN to use to compute the mean direction index
-
 #' @return Returns three-order tensor with the log2 CE index of each pair of cell type in each image
 #' @examples
 #' MD_tensor = MD_index_tensor(sce)

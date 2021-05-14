@@ -8,7 +8,8 @@ KNN_clustering(
   sce,
   K = 30,
   clustering_method = "Louvain",
-  assay_type = "Count_normalised_intensity"
+  assay_type = "Count_normalised_intensity",
+  metric = "L2"
 )
 }
 \arguments{
