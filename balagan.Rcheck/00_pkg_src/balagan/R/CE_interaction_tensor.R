@@ -14,7 +14,7 @@
 #' @import foreach
 #' @export
 
-.Compute_bivariate_CE_index = function(X_pattern,Y_pattern,k_parameter = 1) {
+Compute_bivariate_CE_index = function(X_pattern,Y_pattern,k_parameter = 1) {
   
   NN_distance = nncross(X_pattern,Y_pattern,k = k_parameter)
   
