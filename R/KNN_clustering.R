@@ -18,7 +18,7 @@
 
 #' @export
 
-KNN_clustering = function(sce,K=30,clustering_method = "Louvain",assay_type="Count_normalised_intensity",metric="L2") {
+KNN_clustering = function(sce,K=30,clustering_method = "Louvain",assay_type="Count_normalised_intensity",metric="angular") {
   
   if (!assay_type%in%names(assays(sce))) {
     stop("The slot required does not exist. Please select an existing slot !")

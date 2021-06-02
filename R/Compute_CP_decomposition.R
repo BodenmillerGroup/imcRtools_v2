@@ -4,13 +4,44 @@
 #' @description Compute the Canonical Polyadic decomposition of a tensor object and reorder the data in a more understandable way
 #'
 #' @param Interaction_tensor a three-order tensor object,
+#' @param num_components number of components to compute
+#' @param max_iter number of iterations
+#' @param tol relative error tolerance 
+#' @param Center_data center the data through third dimension before CP 
+#' @param Scale_data scale the data through third dimension before CP 
 #' @return Returns a list containing the score matrix (score for each sample in each CP dimension), the list of typical matrices (product of the left and right CP vectors) and a vector with the lambda values
 #' @examples
 #' CP_decomposition = Compute_CP_decomposition(sce)
 #' @import rTensor
 #' @export
 
-Compute_CP_decomposition = function(Interaction_tensor,num_components=5,max_iter = 1000,tol = 1e-6) {
+Compute_CP_decomposition = function(Interaction_tensor,num_components=5,max_iter = 1000,tol = 1e-6,Center_data = T, Scale_data=F) {
+  
+  if (Center_data) {
+    cat("Centering the data \n !")
+    N_col = dim(Interaction_tensor)[1]
+    N_row = dim(Interaction_tensor)[2]
+    
+    for (i in 1:N_col) {
+      for (j in 1:N_row) {
+        Interaction_tensor[i,j,]@data = Interaction_tensor[i,j,]@data - mean(Interaction_tensor[i,j,]@data)
+      }
+    }
+  }
+  
+  if (Scale_data) {
+    cat("Scaline the data \n !")
+    N_col = dim(Interaction_tensor)[1]
+    N_row = dim(Interaction_tensor)[2]
+    
+    for (i in 1:N_col) {
+      for (j in 1:N_row) {
+        Interaction_tensor[i,j,]@data = Interaction_tensor[i,j,]@data / sd(Interaction_tensor[i,j,]@data)
+      }
+    }
+    
+  }
+  
   
   cat("Computing the CP decomposition : \n")
   Resulting_decomposition = cp(Interaction_tensor,num_components = num_components,max_iter = max_iter,tol = tol)

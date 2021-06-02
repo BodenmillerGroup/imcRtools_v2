@@ -8,7 +8,8 @@ UMAP_embedding(
   sce,
   assay_type = "Count_normalised_intensity",
   metric = "correlation",
-  n_neighbors = 30
+  n_neighbors = 30,
+  use
 )
 }
 \arguments{
