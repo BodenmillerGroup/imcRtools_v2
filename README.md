@@ -64,17 +64,24 @@ Both functions plot the cell location and colored the cells based on their clust
 ```r
 Plot_cluster_spatial(sce,Image_number = 3,Cex_parameter = 6)
 ```
-<div style="text-align:center"><img src="Screenshot/Cluster_spatial_plot.jpeg" alt="Cluster_spatial_plot.jpeg" width='600'> 
+<img src="Screenshot/Cluster_spatial_plot.jpeg" alt="Cluster_spatial_plot.jpeg" width='600'> 
 
 
 ```r
 Plot_gene_expression_spatial(sce,Cex_parameter = 6,assay_type = "Raw_intensity",Gene = "CD9",Image_number = 3)
 ```
 
-<div style="text-align:center"><img src="Screenshot/CD9_spatial_plot.jpeg" alt="CD9_spatial_plot.jpeg" width='600'> 
+<img src="Screenshot/CD9_spatial_plot.jpeg" alt="CD9_spatial_plot.jpeg" width='600'> 
 
+Of course the expression level of an individual gene across clusters can also be visualized :
 
+```r
+Plot_cluster_gene_expression(sce,Gene = "CD9",assay_type = "Count_normalised_intensity" )
+```
 
+<img src="Screenshot/Boxplot_CD9.jpeg" alt="Boxplot_CD9.jpeg" width='600'> 
 
+Worth noting, the boxplot colours correspond exactly to the color used by the **Plot_cluster_spatial()** function, allowing to easily compare the plots.
 
-
+  
+  
