@@ -40,7 +40,7 @@ sce = Count_normalization(sce,residual_normalisation = "Pearson")
 ```
 Each transformation will be stored in a different slot within the sce object and can be selected to perform the next analysis steps.
 
-<img src="Screenshots/Arcsinh_plot.jpeg" alt="Arcsinh_plot.jpeg" width='600'> 
+<img src="Screenshots/Arcsinh_plot.jpeg" alt="Arcsinh_plot.png" width='600'> 
 
 # Data clustering
 
