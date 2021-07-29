@@ -26,8 +26,40 @@ sce = Create_SCE(List_data,dimension = "2D",Bit_mode = 16,N_core = 6)
 The first function loads the CP output (cell.csv) together with the annotation panel file (panel.csv file) while the second functions aggregates the data into a SingleCellExperiment (sce) object. Please carefully selects the number of cores that will be used by the parallelized functions of Balagan (N_core function) !
 For a full description of how those functions can be tuned to load other types of files please see their associated documentation files.
 
-# Data normalization and clustering
+# Data normalization
 
 Highly multiplexed intensity data can be transformed using various functions. In Balagan two types transforms are available :
 + The inverse hyperbolic sinus transform. This transformation is the standard variance stabilizing transform (VST) for many distributions, including Negative Binomial distribution. The cofactor is either provided by the user or is automatically computed by calculting the relation between the mean and the variance across channels.
 + The residual count transform. This transformation is only possible if the data provided represents the total metal/fluorescence intensity (and not the mean) and if the size (in pixel) of each cell is available in the sce object. Briefly for each channel a log-Poisson regression between the total intensity and the size of the cell is computed. The residuals are then extracted and transformed and are then considered as the new expression value. 
+
+Each transform is implemented in a dedicated function :
+
+```r
+sce = Arcsinh_normalization(sce)
+sce = Count_normalization(sce,residual_normalisation = "Pearson")
+```
+Each transformation will be stored in a different slot within the sce object and can be selected to perform the next analysis steps.
+
+<img src="Screenshots/Arcsinh_plot.jpeg" alt="Arcsinh_plot.jpeg" width='600'> 
+
+# Data clustering
+
+So far, only a graph-based clustering method has been implemented in Balagan. A K-nearest neighbor graph is first computed before performing community detection using either the Louvain, Infomap or 'greedy' methods. The user can change the value of the K parameter, as well as the metric used to build the KNN (euclidean or cosine). Of course the user can select on which data slot the clustering is performed : the raw data ("Raw_intensity"), count transformed ("Count_normalised_intensity") and the arcsinh transform ("Arcsinh_transformed_intensity")
+
+```r
+sce = KNN_clustering(sce,K = 15,clustering_method = "Louvain",assay_type = "Count_normalised_intensity",metric = "L2")
+```
+
+The resulting clustering is stored as a column label within the sce object and can be accessed using :
+
+```r
+colLabels(sce)
+```
+# Visualization
+
+
+
+
+
+
+
