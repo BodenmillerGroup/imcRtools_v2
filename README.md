@@ -84,4 +84,22 @@ Plot_cluster_gene_expression(sce,Gene = "CD9",assay_type = "Count_normalised_int
 Worth noting, the boxplot colours correspond exactly to the color used by the **Plot_cluster_spatial()** function, allowing to easily compare the plots.
 
   
-  
+# Interaction tensors 
+
+Balagan is able to describe the spatial structure of a group of images using a mathematical object called a tensor. For a good introduction to tensors and tensor factorisation I would recommend the excellent review "Tensor Decompositions and Applications" by Kolda and Bader.
+
+First interactions between every pair of cell types in every pictures are computed : it can be done using the **Clak-Evan** (CE) or the **Dixon** aggregation index (this step can be quite time-consuming if too many pictures have been taken) : 
+```r
+Dixon_tensor = Dixon_interaction_tensor(sce)
+CE_tensor = CE_interaction_tensor(sce)
+```
+
+The obtained tensors are complex to handle and interpret. We must therefore perform a dimensionality reduction step called **Canonical Polyadic** (CP) decomposition. Like classical dimensionality reduction techniques such as PCA or NMF, the number of dimension has to be provided, as well as other aspects such as centering and scaling of the data :   
+```r
+CP_decomposition = Compute_CP_decomposition(CE_tensor,num_components = 3,Center_data = T,Scale_data = F)
+```
+At the end of the computation, a diagnostic plot should be produced to check the quality of the model. Do not hesitate to change the number of component to find the optimal decomposition : indeed, unlike for matrix factorization, a CP reduction with k-1 component is not comprised within a CP reduction with k components.
+
+
+
+
