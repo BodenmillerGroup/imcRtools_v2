@@ -98,8 +98,8 @@ The obtained tensors are complex to handle and interpret. We must therefore perf
 ```r
 CP_decomposition = Compute_CP_decomposition(CE_tensor,num_components = 3,Center_data = T,Scale_data = F)
 ```
-At the end of the computation, a diagnostic plot should be produced to check the quality of the model. Do not hesitate to change the number of component to find the optimal decomposition : indeed, unlike for matrix factorization, a CP reduction with k-1 component is not comprised within a CP reduction with k components.
+At the end of the computation, a diagnostic plot should be produced to check the quality of the model. Do not hesitate to change the number of component to find the optimal decomposition : indeed, unlike for matrix factorization, a CP reduction with k-1 component is not comprised within a CP reduction with k components. I recommend every user to read a bit about CP before using this feature !
 
-
+<img src="Screenshot/Diagnostic_plot_CP.jpeg" alt="Diagnostic_plot_CP.jpeg" width='400'> 
 
 
