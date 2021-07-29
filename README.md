@@ -40,7 +40,7 @@ sce = Count_normalization(sce,residual_normalisation = "Pearson")
 ```
 Each transformation will be stored in a different slot within the sce object and can be selected to perform the next analysis steps.
 
-<img src="Screenshot/Arcsinh_plot.jpeg" alt="Arcsinh_plot.png" width='340'> 
+<img src="Screenshot/Arcsinh_plot.jpeg" alt="Arcsinh_plot.png" width='400'> 
 
 # Data clustering
 
@@ -57,6 +57,21 @@ colLabels(sce)
 ```
 # Visualization
 
+To easily visualize the results of the processing/clustering steps, Balagan contains several functions including **Plot_cluster_spatial()** and **Plot_gene_expression_spatial()**.
+
+Both functions plot the cell location and colored the cells based on their cluster or the expression level of a specific gene. The user can select which field of view/image he wants using the 'Image_number' parameter, as well as the size of the points with the 'Cex_parameter' option
+
+```r
+Plot_cluster_spatial(sce,Image_number = 3,Cex_parameter = 6)
+```
+<img src="Screenshot/Cluster_spatial_plot.jpeg" alt="Cluster_spatial_plot.jpeg" width='400'> 
+
+
+```r
+Plot_gene_expression_spatial(sce,Cex_parameter = 6,assay_type = "Raw_intensity",Gene = "CD9",Image_number = 3)
+```
+
+<img src="Screenshot/CD9_spatial_plot.jpeg" alt="CD9_spatial_plot.jpeg" width='400'> 
 
 
 
