@@ -103,3 +103,21 @@ At the end of the computation, a diagnostic plot should be produced to check the
 <img src="Screenshot/Diagnostic_plot_CP.jpeg" alt="Diagnostic_plot_CP.jpeg" width='800'> 
 
 
+# Patch detection
+
+A different approach to calculating interaction tensors consists in the detection of cell patches, i.e physically contiguous group of cells with a spatially homogenous cell composition. Briefly, for each selected image, a graph is computed (can be a KNN, fixed radius, Gabriel's or Delaunay's graph) and a weight is computed between each neighbor based on the cell type composition of their respective neighborhood (can be first but also second, third... order neighbors). Communities are then detected using either a greedy clustering or an in-house approach ('saturation' approach).
+
+This appraoch is extremely parameter sensitive and should be used with care due to the large computational cost currently required to perform such analysis : 
+
+```r
+Patch_list = Patch_detection(sce,graph_type = "Radius",graph_parameter = 30,neighbor_degree = 1,clustering_method = "saturation",distance_composition = "Bray-Curtis",image_list = 3)
+```
+
+The result of the analysis can easily be visualized :
+
+```r
+Plot_cluster_spatial(sce,Image_number = 3,Cex_parameter = 6,Provided_cluster = Patch_list[[1]])
+```
+<img src="Screenshot/Patch_detection.png" alt="Patch_detection.png" width='600'> 
+
+
