@@ -1,12 +1,13 @@
 #' @rdname Plot_cluster_spatial
 #' @title Visualization of cluster spatial distribution
 #'
-#' @description Plot the spatial distribution of a given gene normalised expression
+#' @description Plot the spatial distribution of the identified clusters or of any other provided grouping of the cells
 #'
 #' @param sce a \code{\link[SingleCellExperiment]{SingleCellExperiment}}. Clustering of the cell should have been previously performed.
 #' @param Image_number Number of name of the image/ROI to be plotted
 #' @param Cex_parameter Scaling factor for the size of the cells 
 #' @param Specific_cluster Colors points based based on their belonging to a specific cluster 
+#' @param Provided_group User-provided clustering
 #' @return Return a plot 
 #' @examples 
 #' Plot_cluster_spatial(sce,Image_number = 1)
@@ -15,7 +16,7 @@
 #' @import SingleCellExperiment 
 #' @export
 
-Plot_cluster_spatial = function(sce,Image_number = 1,Cex_parameter=10,Specific_cluster=NULL) {
+Plot_cluster_spatial = function(sce,Image_number = 1,Cex_parameter=10,Specific_cluster=NULL,Provided_cluster=NULL) {
   if (is.null(colLabels(sce))) {
     stop("Please compute clustering first ! \n")
   }
@@ -24,6 +25,10 @@ Plot_cluster_spatial = function(sce,Image_number = 1,Cex_parameter=10,Specific_c
   Temp_location_data = data.frame(X=sce$Location_Center_X[sce$ImageNumber==Image_number],
                                   Y=sce$Location_Center_Y[sce$ImageNumber==Image_number])
   Temp_cluster_data = colLabels(sce)[sce$ImageNumber==Image_number]
+  
+  if (!is.null(Provided_cluster)) {
+    Temp_cluster_data = Provided_cluster
+  }
   
   Dimension = metadata(sce)$dimension
   

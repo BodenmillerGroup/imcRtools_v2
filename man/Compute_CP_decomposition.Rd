@@ -8,11 +8,23 @@ Compute_CP_decomposition(
   Interaction_tensor,
   num_components = 5,
   max_iter = 1000,
-  tol = 1e-06
+  tol = 1e-06,
+  Center_data = T,
+  Scale_data = F
 )
 }
 \arguments{
 \item{Interaction_tensor}{a three-order tensor object,}
+
+\item{num_components}{number of components to compute}
+
+\item{max_iter}{number of iterations}
+
+\item{tol}{relative error tolerance}
+
+\item{Center_data}{center the data through third dimension before CP}
+
+\item{Scale_data}{scale the data through third dimension before CP}
 }
 \value{
 Returns a list containing the score matrix (score for each sample in each CP dimension), the list of typical matrices (product of the left and right CP vectors) and a vector with the lambda values

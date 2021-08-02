@@ -18,14 +18,14 @@
 #' @import SingleCellExperiment
 #' @import igraph
 #' @import dbscan  
-#' @import spatgraph  
-#' @import spatstats
+#' @import spatgraphs
+#' @import spatstat
 #' @import doParallel
 #' @import foreach
 #' @import N2R
 #' @export
 
-Patch_detection = function(sce,graph_type = "KNN",graph_parameter = NULL,neighbor_degree=2,clustering_method="greedy",distance_composition="cosine",min_points = 15,image_list=NULL) {
+Patch_detection = function(sce,graph_type = "KNN",graph_parameter = NULL,neighbor_degree=2,clustering_method="saturation",distance_composition="Bray-Curtis",min_points = 15,image_list=NULL) {
   
 
   if (!graph_type%in%c("KNN","Radius","Gabriel")) {
@@ -99,9 +99,12 @@ Patch_detection = function(sce,graph_type = "KNN",graph_parameter = NULL,neighbo
       composition_i = Point_label[Neighbor_i_specific]
       composition_j = Point_label[Neighbor_j_specific]
       
+      
       composition_i_normalized = table(factor(composition_i,levels = List_values))/length(List_values)
       composition_j_normalized = table(factor(composition_j,levels = List_values))/length(List_values)
       
+      composition_i = table(factor(composition_i,levels = List_values))
+      composition_j = table(factor(composition_j,levels = List_values))
       
       if (distance_composition=="cosine") {
         Distance_score = 1-sum((composition_i_normalized*composition_j_normalized))/(sqrt(sum(composition_i_normalized^2))*sqrt(sum(composition_j_normalized^2)))
@@ -113,19 +116,26 @@ Patch_detection = function(sce,graph_type = "KNN",graph_parameter = NULL,neighbo
         Distance_score = sum(Distance_score,na.rm = T)
       }
       
+      if (distance_composition=="Bray-Curtis") {
+        
+        U = rbind(composition_i,composition_j)
+        Min_comp = apply(U,MARGIN = 2,FUN = min)
+        Distance_score = 1 - sum(Min_comp)/sum(U)
+      }
+      
+      
       List_weights = c(List_weights,Distance_score)
     }
     
-    if (distance_composition=="cosine") {
+    if (distance_composition%in%c("cosine","Bray-Curtis")) {
       List_weights[is.na(List_weights)] = 1
     }
     
     ###Going from distance to similarity 
     
-    List_weights_transformed = exp(-List_weights^2/var(List_weights))
-    E(Final_graph)$weight = List_weights_transformed
+    List_weights_transformed = exp(-List_weights/sd(List_weights))
+    E(Final_graph)$weight = List_weights_transformed*100
     
-
     ## Clustering on the graph
     
     if (clustering_method=="greedy") {
@@ -140,7 +150,7 @@ Patch_detection = function(sce,graph_type = "KNN",graph_parameter = NULL,neighbo
       List_number_components = c()
       
       #Finding the best cut
-      for (i in seq(0,1,length.out=30)) {
+      for (i in seq(min(E(Final_graph)$weight),quantile(E(Final_graph)$weight,0.99),length.out=30)) {
         print(i)
         Similarity_matrix_sat = Similarity_matrix
         Similarity_matrix_sat[Similarity_matrix_sat<i] = 0
@@ -160,7 +170,7 @@ Patch_detection = function(sce,graph_type = "KNN",graph_parameter = NULL,neighbo
       Similarity_matrix_sat = Similarity_matrix
       Similarity_matrix_sat[Similarity_matrix_sat<Threshold_similarity] = 0
       Graph_cuted = graph_from_adjacency_matrix(Similarity_matrix_sat,mode = "undirected",weighted = T)
-      Louvain_clustering = cluster_fast_greedy(Graph_cuted)
+      Louvain_clustering = fastgreedy.community(Graph_cuted)
       Clustering_final = Louvain_clustering$membership
       
       #Cleaning the resulting clusters
@@ -169,7 +179,7 @@ Patch_detection = function(sce,graph_type = "KNN",graph_parameter = NULL,neighbo
       Clustering_final[Clustering_final%in%clusters_to_filter] = 0
       
       plot.igraph(Graph_cuted,layout = as.matrix(Location_points),vertex.label=NA,vertex.size=2,
-                  edge.width = E(Graph_cuted)$weight,vertex.color=string.to.colors(Clustering_final==0))
+                  edge.width = E(Graph_cuted)$weight,vertex.color=string.to.colors(Clustering_final))
       
 
     }

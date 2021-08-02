@@ -9,7 +9,7 @@ KNN_clustering(
   K = 30,
   clustering_method = "Louvain",
   assay_type = "Count_normalised_intensity",
-  metric = "L2"
+  metric = "angular"
 )
 }
 \arguments{

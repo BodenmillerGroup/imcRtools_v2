@@ -9,6 +9,8 @@
 #' @examples
 #' Visualize_CP(CP_object)
 #' @import pheatmap
+#' @export
+
 
 Visualize_CP = function(CP_decomposition,k=1) {
   

@@ -1,5 +1,5 @@
 #' @rdname Count_normalization
-#' @title Normalisation and scaling of marker expression 
+#' @title Normalisation and scaling of marker expression based on a glm count model
 #'
 #' @description This function normalize and transform the intensity using a glm-based strategy
 #'
@@ -14,6 +14,7 @@
 #' @import SingleCellExperiment
 #' @import doParallel
 #' @import foreach
+#' @import statmod
 #' @export
 
 Count_normalization = function(sce,perform_batch_correction=FALSE,
@@ -115,7 +116,7 @@ Count_normalization = function(sce,perform_batch_correction=FALSE,
     Fitted_values = List_regression_model[[i]]$fitted.values
     Real_values = Transformed_data[,i]
     
-    if (!residual_normalisation%in%c("Anscombe","Pearson","Working","VST")){
+    if (!residual_normalisation%in%c("Anscombe","Pearson","Working","VST","Random_quantile")){
       cat("No proper method for residual normalization provided. Using the Anscombe normalization method")
     }
     
@@ -134,7 +135,7 @@ Count_normalization = function(sce,perform_batch_correction=FALSE,
     if (residual_normalisation=="VST") {
       Normalised_residuals = (sqrt(Real_values)-sqrt(Fitted_values))/2
     }
-    
+
     Normalised_residuals
     
     
