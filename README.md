@@ -120,4 +120,6 @@ Plot_cluster_spatial(sce,Image_number = 3,Cex_parameter = 6,Provided_cluster = P
 ```
 <img src="Screenshot/Patch_detection.png" alt="Patch_detection.png" width='600'> 
 
+It is worth noting that when the selected clustering method is 'saturation', not all cells will be assigned to a patch : those cells will receive the label '0' meaning that they do not belong to an 'intersting zone' and are therefore removed from analysis.
+
 
