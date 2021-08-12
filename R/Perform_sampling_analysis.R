@@ -9,7 +9,7 @@
 #' @param N_sampling_region_vector vector (or integer) describing the different values taken by the number of sampled regions
 #' @param width_FOV_vector vector (or real number) describing the width of the FOV
 #' @param height_FOV_vector vector (or real number) describing the height of the FOV
-#' @param Threshold_detection real number corresponding to the minimal number of a given cell type to be considered as detected. Typically around 50 or 100.
+#' @param Threshold_detection_cluster real number corresponding to the minimal number of a given cell type to be considered as detected. Typically around 50 or 100.
 #' @return Returns a data.frame containing various summary statistics such as the mean number of detected clusters, the KL divergence with the real cell type composition etc...
 #' @examples
 #' #Simple case where only the number of sample regions changes :
@@ -21,7 +21,7 @@
 Perform_sampling_analysis = function(sce,Selected_image=1,N_times=50,
                                      N_sampling_region_vector=1:20,
                                      width_FOV_vector=400,height_FOV_vector=400,
-                                     Threshold_detection=50) {
+                                     Threshold_detection_cluster=50) {
   
   #Checking/Modifiying the shape of the parameter vector
   Length_vector = c(length(N_sampling_region_vector),length(width_FOV_vector),length(height_FOV_vector))
@@ -65,6 +65,7 @@ Perform_sampling_analysis = function(sce,Selected_image=1,N_times=50,
   Sd_KL_score = c()
   
   
+  ##Performing the sampling in itself
   
   for (i in 1:Length_vector) {
     

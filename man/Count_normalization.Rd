@@ -2,7 +2,7 @@
 % Please edit documentation in R/Count_normalization.R
 \name{Count_normalization}
 \alias{Count_normalization}
-\title{Normalisation and scaling of marker expression}
+\title{Normalisation and scaling of marker expression based on a glm count model}
 \usage{
 Count_normalization(
   sce,

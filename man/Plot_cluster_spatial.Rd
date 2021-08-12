@@ -8,7 +8,8 @@ Plot_cluster_spatial(
   sce,
   Image_number = 1,
   Cex_parameter = 10,
-  Specific_cluster = NULL
+  Specific_cluster = NULL,
+  Provided_cluster = NULL
 )
 }
 \arguments{
@@ -19,12 +20,14 @@ Plot_cluster_spatial(
 \item{Cex_parameter}{Scaling factor for the size of the cells}
 
 \item{Specific_cluster}{Colors points based based on their belonging to a specific cluster}
+
+\item{Provided_group}{User-provided clustering}
 }
 \value{
 Return a plot
 }
 \description{
-Plot the spatial distribution of a given gene normalised expression
+Plot the spatial distribution of the identified clusters or of any other provided grouping of the cells
 }
 \examples{
 Plot_cluster_spatial(sce,Image_number = 1)

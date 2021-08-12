@@ -58,7 +58,7 @@ Random_spatial_sampling = function(sce,width_FOV=400,height_FOV=400,N_samplings=
   
   for (k in 1:nrow(List_center)) {
     center_temp = List_center[k,]
-    Selected_cells = which(sce$Location_Center_X>center_temp[1]-width_FOV/2 & center_temp[1]+width_FOV/2 & sce$Location_Center_Y > center_temp[2]-height_FOV/2 & sce$Location_Center_Y < center_temp[2]+height_FOV/2 )
+    Selected_cells = which(sce$Location_Center_X> (center_temp[1]-width_FOV/2) &  sce$Location_Center_X < center_temp[1]+width_FOV/2 & sce$Location_Center_Y > center_temp[2]-height_FOV/2 & sce$Location_Center_Y < center_temp[2]+height_FOV/2 )
     List_sampled_cells[[k]] = Selected_cells
     List_sampled_cluster[[k]] = colLabels(sce)[Selected_cells]
     List_sample = c(List_sample,rep(paste("Sample",k,sep = "_"),length(Selected_cells)))
@@ -66,16 +66,13 @@ Random_spatial_sampling = function(sce,width_FOV=400,height_FOV=400,N_samplings=
   
   if (plot_result) {
     
-    par(bty="n",xaxt="n",yaxt="n")
-    plot(NULL,xlim=range(c(x_range,y_range)),ylim=range(c(x_range,y_range)),xlab="",ylab="")
-    rect(xleft = x_range[1],ybottom = y_range[1],
-         xright = x_range[2],ytop = y_range[2])
-    points(List_center,pch=21,bg="orange3")
-    
+    par(bty="n",las=1)
+    plot(sce$Location_Center_X,sce$Location_Center_Y,pch=21,bg=string.to.colors(colLabels(sce)))
+
     for (k in 1:nrow(List_center)) {
       center_temp = List_center[k,]
       rect(xleft = center_temp[1]-width_FOV/2,ybottom = center_temp[2]-height_FOV/2,
-           xright = center_temp[1]+width_FOV/2,ytop = center_temp[2]+height_FOV/2,col = "grey",density = 40)
+           xright = center_temp[1]+width_FOV/2,ytop = center_temp[2]+height_FOV/2,col = "black",density = 40)
     }
   }
   

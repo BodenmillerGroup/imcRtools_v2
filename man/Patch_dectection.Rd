@@ -9,8 +9,8 @@ Patch_detection(
   graph_type = "KNN",
   graph_parameter = NULL,
   neighbor_degree = 2,
-  clustering_method = "greedy",
-  distance_composition = "cosine",
+  clustering_method = "saturation",
+  distance_composition = "Bray-Curtis",
   min_points = 15,
   image_list = NULL
 )
